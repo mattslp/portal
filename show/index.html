@@ -402,12 +402,12 @@
     body.light svg { filter: invert(1) brightness(0.15); }
   </style>
 </head>
-<body style="opacity:0"><script>document.addEventListener("DOMContentLoaded",function(){document.body.style.opacity=""})</script>
+<body>
 
 <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">Light</button>
 
 <!-- Loading -->
-<div id="portal-loading" class="sl-loading">
+<div id="portal-loading" class="sl-loading" style="display:none">
   <svg width="72" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210" aria-label="Loading">
     <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
     <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
@@ -518,6 +518,8 @@ function formatDate(iso) {
 
 // ── Init ──────────────────────────────────────────────────────
 async function init() {
+  document.getElementById('portal-loading').style.display = 'flex';
+
   if (!SHOW_ID) {
     showError('No show specified.');
     return;
