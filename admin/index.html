@@ -339,10 +339,9 @@ function formatDate(iso) {
 
 // ── Init ──────────────────────────────────────────────────────
 async function init() {
-  document.getElementById('admin-loading').style.display = 'none';
   if (!SHOW_ID) { alert('No show specified.'); return; }
 
-  // Fetch show name for login screen
+  // Fetch show name for login screen — keep loading spinner visible until done
   try {
     const res = await fetch(SCRIPT_URL + '?action=getShowName&show_id=' + encodeURIComponent(SHOW_ID));
     const data = await res.json();
@@ -351,6 +350,8 @@ async function init() {
       document.getElementById('login-subtitle').textContent = (data.location || 'Street Lamp') + ' · Admin';
     }
   } catch(e) { /* non-critical */ }
+  document.getElementById('admin-loading').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
 
   const saved = sessionStorage.getItem('admin_pw_' + SHOW_ID);
   if (saved) {
