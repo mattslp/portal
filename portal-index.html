@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show Portal | Street Lamp</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <style>
+    @import url('https://use.typekit.net/wby1ytb.css');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #020202;
+      --surface:   #0e0e0e;
+      --border:    rgba(245,240,232,0.1);
+      --text:      #f5f0e8;
+      --text-dim:  rgba(245,240,232,0.5);
+      --text-faint:rgba(245,240,232,0.22);
+      --gold:      #cc9900;
+      --font:      'komet', 'Jost', sans-serif;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Login screen ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      gap: 32px;
+    }
+
+    #login-logo {
+      width: 64px;
+      opacity: 0.7;
+    }
+
+    #login-title {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    #login-subtitle {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    #login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .portal-input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(245,240,232,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .portal-input::placeholder { color: var(--text-faint); }
+    .portal-input:focus { border-color: rgba(245,240,232,0.35); }
+
+    .portal-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: transparent;
+      border: 1px solid var(--text-dim);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .portal-btn:hover { background: var(--text); color: var(--bg); }
+    .portal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #login-error {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: #e05555;
+      text-align: center;
+      display: none;
+    }
+
+    /* ── Portal ── */
+    #portal-screen { display: none; }
+
+    .portal-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* Header */
+    #portal-header {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    #portal-header-left { display: flex; flex-direction: column; gap: 12px; }
+
+    #portal-show-eyebrow {
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    #portal-show-name {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    #portal-show-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      margin-top: 4px;
+    }
+
+    .portal-meta-item {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    #portal-logo {
+      width: 48px;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    /* Sections */
+    .portal-section {
+      margin-bottom: 56px;
+    }
+
+    .portal-section-heading {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Description */
+    #portal-description {
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.8;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+    }
+
+    /* Creative team */
+    #portal-creative {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .portal-creative-item { }
+    .portal-creative-role {
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 4px;
+    }
+    .portal-creative-name {
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* Posts */
+    #portal-posts { display: flex; flex-direction: column; gap: 16px; }
+
+    .portal-post {
+      padding: 20px 24px;
+      background: var(--surface);
+      border-left: 3px solid var(--gold);
+    }
+
+    .portal-post-meta {
+      font-size: 0.52rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+
+    .portal-post-body {
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      white-space: pre-wrap;
+    }
+
+    /* Resources */
+    #portal-resources { display: flex; flex-direction: column; gap: 8px; }
+
+    .portal-resource {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+      background: var(--surface);
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+
+    .portal-resource:hover { border-color: rgba(245,240,232,0.35); }
+
+    .portal-resource-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245,240,232,0.06);
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+
+    .portal-resource-icon svg { width: 16px; height: 16px; }
+
+    .portal-resource-info { flex: 1; min-width: 0; }
+
+    .portal-resource-label {
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .portal-resource-type {
+      font-size: 0.5rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-top: 2px;
+    }
+
+    .portal-resource-arrow {
+      color: var(--text-faint);
+      flex-shrink: 0;
+    }
+
+    /* Empty states */
+    .portal-empty {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      padding: 20px 0;
+    }
+
+    /* Loading */
+    #portal-loading {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #portal-loading svg {
+      width: 56px;
+      animation: portal-pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes portal-pulse {
+      0%, 100% { opacity: 0.15; }
+      50%       { opacity: 0.5; }
+    }
+
+    @media (max-width: 600px) {
+      #portal-header { flex-direction: column; }
+      #portal-logo { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="portal-loading">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210" aria-label="Loading">
+    <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
+    <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
+    <path fill="#f5f0e8" d="M793.98,1032.56h175.08c0-265.62,104.07-472.75,144.89-543.77-36.94-22.44-108.08-67.8-180.07-125.33-89.22-71.3-150.67-138.03-183.89-199.48-33.22,61.45-94.66,128.18-183.89,199.48-71.99,57.54-143.13,102.89-180.07,125.33,40.82,71.02,144.89,278.15,144.89,543.77h175.22v87.69H184.18v87.69h1131.65v-87.69h-521.85v-87.69ZM793.98,487.29l228.52,51.56c-40.21,86.81-94.02,231.4-108.22,406.03h-120.3v-457.58ZM585.72,944.88c-14.2-174.63-68.01-319.22-108.22-406.03l228.78-51.62-.13,457.64h-120.43Z"/>
+  </svg>
+</div>
+
+<!-- Login -->
+<div id="login-screen" style="display:none">
+  <svg id="login-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210">
+    <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
+    <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
+    <path fill="#f5f0e8" d="M793.98,1032.56h175.08c0-265.62,104.07-472.75,144.89-543.77-36.94-22.44-108.08-67.8-180.07-125.33-89.22-71.3-150.67-138.03-183.89-199.48-33.22,61.45-94.66,128.18-183.89,199.48-71.99,57.54-143.13,102.89-180.07,125.33,40.82,71.02,144.89,278.15,144.89,543.77h175.22v87.69H184.18v87.69h1131.65v-87.69h-521.85v-87.69ZM793.98,487.29l228.52,51.56c-40.21,86.81-94.02,231.4-108.22,406.03h-120.3v-457.58ZM585.72,944.88c-14.2-174.63-68.01-319.22-108.22-406.03l228.78-51.62-.13,457.64h-120.43Z"/>
+  </svg>
+  <div>
+    <h1 id="login-title">Show Portal</h1>
+    <p id="login-subtitle" style="margin-top:8px">Street Lamp Productions</p>
+  </div>
+  <form id="login-form" onsubmit="handleLogin(event)">
+    <input class="portal-input" type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password" required>
+    <button class="portal-btn" type="submit" id="login-btn">Enter</button>
+    <p id="login-error">Incorrect password — please try again.</p>
+  </form>
+</div>
+
+<!-- Portal -->
+<div id="portal-screen">
+  <div class="portal-wrap">
+    <div id="portal-header">
+      <div id="portal-header-left">
+        <p id="portal-show-eyebrow">Street Lamp Productions</p>
+        <h1 id="portal-show-name"></h1>
+        <div id="portal-show-meta"></div>
+      </div>
+      <a href="https://streetlamp.org">
+        <svg id="portal-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210">
+          <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
+          <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
+          <path fill="#f5f0e8" d="M793.98,1032.56h175.08c0-265.62,104.07-472.75,144.89-543.77-36.94-22.44-108.08-67.8-180.07-125.33-89.22-71.3-150.67-138.03-183.89-199.48-33.22,61.45-94.66,128.18-183.89,199.48-71.99,57.54-143.13,102.89-180.07,125.33,40.82,71.02,144.89,278.15,144.89,543.77h175.22v87.69H184.18v87.69h1131.65v-87.69h-521.85v-87.69ZM793.98,487.29l228.52,51.56c-40.21,86.81-94.02,231.4-108.22,406.03h-120.3v-457.58ZM585.72,944.88c-14.2-174.63-68.01-319.22-108.22-406.03l228.78-51.62-.13,457.64h-120.43Z"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- About -->
+    <div class="portal-section" id="section-about" style="display:none">
+      <p class="portal-section-heading">About This Show</p>
+      <p id="portal-description"></p>
+    </div>
+
+    <!-- Creative team -->
+    <div class="portal-section" id="section-creative" style="display:none">
+      <p class="portal-section-heading">Creative Team</p>
+      <div id="portal-creative"></div>
+    </div>
+
+    <!-- Announcements -->
+    <div class="portal-section">
+      <p class="portal-section-heading">Announcements</p>
+      <div id="portal-posts"><p class="portal-empty">No announcements yet.</p></div>
+    </div>
+
+    <!-- Resources -->
+    <div class="portal-section">
+      <p class="portal-section-heading">Resources</p>
+      <div id="portal-resources"><p class="portal-empty">No resources yet.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwR37bDfrzlr8gXWUHwr_Z36U5J6_XcFlIZKv7tIBBNg282AsmHL2BLG4zZpHpEY_v1eQ/exec';
+
+const params  = new URLSearchParams(window.location.search);
+const SHOW_ID = params.get('show') || '';
+
+let sessionPassword = null;
+
+// ── Resource type icons ───────────────────────────────────────
+const ICONS = {
+  document: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+  audio:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  video:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+  link:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  image:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+};
+
+function iconFor(type) {
+  return ICONS[type] || ICONS.link;
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ── Init ──────────────────────────────────────────────────────
+async function init() {
+  document.getElementById('portal-loading').style.display = 'none';
+
+  if (!SHOW_ID) {
+    showError('No show specified.');
+    return;
+  }
+
+  // Check session storage for saved password
+  const saved = sessionStorage.getItem('portal_pw_' + SHOW_ID);
+  if (saved) {
+    sessionPassword = saved;
+    await loadPortal();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+}
+
+function showError(msg) {
+  document.getElementById('portal-loading').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-title').textContent = msg;
+  document.getElementById('login-form').style.display = 'none';
+}
+
+// ── Login ─────────────────────────────────────────────────────
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const pw  = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  err.style.display = 'none';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'auth', show_id: SHOW_ID, password: pw })
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      sessionPassword = pw;
+      sessionStorage.setItem('portal_pw_' + SHOW_ID, pw);
+      document.getElementById('login-screen').style.display = 'none';
+      await loadPortal();
+    } else {
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enter';
+    }
+  } catch {
+    err.textContent = 'Connection error — please try again.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enter';
+  }
+}
+
+// ── Load portal ───────────────────────────────────────────────
+async function loadPortal() {
+  const res  = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'getShow', show_id: SHOW_ID })
+  });
+  const data = await res.json();
+
+  if (!data.ok) { showError('Show not found.'); return; }
+
+  renderPortal(data);
+  document.getElementById('portal-screen').style.display = 'block';
+}
+
+// ── Render ────────────────────────────────────────────────────
+function renderPortal(data) {
+  const { show, posts, resources } = data;
+
+  document.title = show.name + ' Portal | Street Lamp';
+  document.getElementById('portal-show-name').textContent = show.name;
+
+  // Meta
+  const meta = document.getElementById('portal-show-meta');
+  if (show.dates)    meta.innerHTML += `<span class="portal-meta-item">${show.dates}</span>`;
+  if (show.location) meta.innerHTML += `<span class="portal-meta-item">${show.location}</span>`;
+
+  // Description
+  if (show.description) {
+    document.getElementById('portal-description').textContent = show.description;
+    document.getElementById('section-about').style.display = '';
+  }
+
+  // Creative team
+  const creativeRoles = [
+    { key: 'director',        label: 'Directed by' },
+    { key: 'music_director',  label: 'Music directed by' },
+    { key: 'choreographer',   label: 'Choreographed by' },
+  ];
+  const creativeEl = document.getElementById('portal-creative');
+  let hasCreative = false;
+  creativeRoles.forEach(role => {
+    if (!show[role.key]) return;
+    hasCreative = true;
+    creativeEl.innerHTML += `<div class="portal-creative-item">
+      <div class="portal-creative-role">${role.label}</div>
+      <div class="portal-creative-name">${show[role.key]}</div>
+    </div>`;
+  });
+  if (hasCreative) document.getElementById('section-creative').style.display = '';
+
+  // Posts
+  const postsEl = document.getElementById('portal-posts');
+  if (posts.length) {
+    postsEl.innerHTML = posts.map(p => `
+      <div class="portal-post">
+        <div class="portal-post-meta">${p.author} &nbsp;·&nbsp; ${formatDate(p.timestamp)}</div>
+        <div class="portal-post-body">${p.message}</div>
+      </div>`).join('');
+  }
+
+  // Resources
+  const resEl = document.getElementById('portal-resources');
+  if (resources.length) {
+    resEl.innerHTML = resources.map(r => `
+      <a class="portal-resource" href="${r.url}" target="_blank" rel="noopener">
+        <div class="portal-resource-icon">${iconFor(r.type)}</div>
+        <div class="portal-resource-info">
+          <div class="portal-resource-label">${r.label}</div>
+          <div class="portal-resource-type">${r.type}</div>
+        </div>
+        <svg class="portal-resource-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>`).join('');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

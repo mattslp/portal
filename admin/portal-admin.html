@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | Street Lamp</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <style>
+    @import url('https://use.typekit.net/wby1ytb.css');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #020202;
+      --surface:   #0e0e0e;
+      --border:    rgba(245,240,232,0.1);
+      --text:      #f5f0e8;
+      --text-dim:  rgba(245,240,232,0.5);
+      --text-faint:rgba(245,240,232,0.22);
+      --gold:      #cc9900;
+      --red:       #cc3333;
+      --font:      'komet', 'Jost', sans-serif;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Login ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      gap: 32px;
+    }
+
+    #login-logo { width: 56px; opacity: 0.7; }
+    #login-title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+    #login-subtitle { font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--text-dim); }
+
+    #login-form { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 340px; }
+
+    .portal-input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(245,240,232,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .portal-input::placeholder { color: var(--text-faint); }
+    .portal-input:focus { border-color: rgba(245,240,232,0.35); }
+
+    textarea.portal-input { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+    .portal-btn {
+      padding: 12px 20px;
+      background: transparent;
+      border: 1px solid var(--text-dim);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .portal-btn:hover:not(:disabled) { background: var(--text); color: var(--bg); }
+    .portal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .portal-btn.danger { border-color: var(--red); color: var(--red); }
+    .portal-btn.danger:hover:not(:disabled) { background: var(--red); color: #fff; }
+
+    #login-error { font-size: 0.6rem; letter-spacing: 0.2em; color: #e05555; text-align: center; display: none; }
+
+    /* ── Admin ── */
+    #admin-screen { display: none; }
+
+    .admin-wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* Header */
+    #admin-header {
+      padding: 40px 0 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    #admin-show-eyebrow { font-size: 0.52rem; font-weight: 600; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    #admin-show-name { font-size: clamp(1.4rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1; }
+    #admin-badge { font-size: 0.5rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--gold); color: var(--gold); align-self: flex-start; margin-top: 4px; }
+
+    /* Sections */
+    .admin-section { margin-bottom: 48px; }
+    .admin-section-heading { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.45em; text-transform: uppercase; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+
+    /* Post form */
+    #post-form { display: flex; flex-direction: column; gap: 12px; }
+    #post-author-row { display: flex; gap: 12px; }
+    #post-author-row .portal-input { flex: 1; }
+    #post-status { font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold); display: none; }
+
+    /* Resource form */
+    #resource-form { display: flex; flex-direction: column; gap: 12px; }
+    #resource-row1, #resource-row2 { display: flex; gap: 12px; }
+    #resource-row1 .portal-input { flex: 1; }
+    select.portal-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23f5f0e8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; cursor: pointer; }
+    select.portal-input option { background: #0e0e0e; }
+
+    /* Upload form */
+    #upload-form { display: flex; flex-direction: column; gap: 12px; }
+    #upload-row { display: flex; gap: 12px; }
+    #upload-row .portal-input { flex: 1; }
+    #file-input { display: none; }
+    #file-label {
+      padding: 14px 18px;
+      background: rgba(245,240,232,0.04);
+      border: 1px dashed var(--border);
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+    #file-label:hover { border-color: rgba(245,240,232,0.35); }
+    #upload-progress { display: none; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold); }
+
+    /* Existing posts/resources */
+    .admin-list { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+
+    .admin-post {
+      padding: 16px 20px;
+      background: var(--surface);
+      border-left: 3px solid var(--gold);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .admin-post-body { flex: 1; }
+    .admin-post-meta { font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 6px; }
+    .admin-post-text { font-size: 0.8rem; font-weight: 300; line-height: 1.6; color: var(--text-dim); white-space: pre-wrap; }
+
+    .admin-resource {
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-resource-label { flex: 1; font-size: 0.8rem; letter-spacing: 0.04em; }
+    .admin-resource-type { font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); }
+
+    .portal-empty { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); padding: 12px 0; }
+
+    /* Loading */
+    #admin-loading { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    #admin-loading svg { width: 56px; animation: portal-pulse 1.8s ease-in-out infinite; }
+    @keyframes portal-pulse { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.5; } }
+  </style>
+</head>
+<body>
+
+<div id="admin-loading">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210">
+    <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
+    <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
+    <path fill="#f5f0e8" d="M793.98,1032.56h175.08c0-265.62,104.07-472.75,144.89-543.77-36.94-22.44-108.08-67.8-180.07-125.33-89.22-71.3-150.67-138.03-183.89-199.48-33.22,61.45-94.66,128.18-183.89,199.48-71.99,57.54-143.13,102.89-180.07,125.33,40.82,71.02,144.89,278.15,144.89,543.77h175.22v87.69H184.18v87.69h1131.65v-87.69h-521.85v-87.69ZM793.98,487.29l228.52,51.56c-40.21,86.81-94.02,231.4-108.22,406.03h-120.3v-457.58ZM585.72,944.88c-14.2-174.63-68.01-319.22-108.22-406.03l228.78-51.62-.13,457.64h-120.43Z"/>
+  </svg>
+</div>
+
+<div id="login-screen" style="display:none">
+  <svg id="login-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210">
+    <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
+    <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
+    <path fill="#f5f0e8" d="M793.98,1032.56h175.08c0-265.62,104.07-472.75,144.89-543.77-36.94-22.44-108.08-67.8-180.07-125.33-89.22-71.3-150.67-138.03-183.89-199.48-33.22,61.45-94.66,128.18-183.89,199.48-71.99,57.54-143.13,102.89-180.07,125.33,40.82,71.02,144.89,278.15,144.89,543.77h175.22v87.69H184.18v87.69h1131.65v-87.69h-521.85v-87.69ZM793.98,487.29l228.52,51.56c-40.21,86.81-94.02,231.4-108.22,406.03h-120.3v-457.58ZM585.72,944.88c-14.2-174.63-68.01-319.22-108.22-406.03l228.78-51.62-.13,457.64h-120.43Z"/>
+  </svg>
+  <div>
+    <h1 id="login-title">Admin Portal</h1>
+    <p id="login-subtitle" style="margin-top:8px">Street Lamp Productions</p>
+  </div>
+  <form id="login-form" onsubmit="handleLogin(event)">
+    <input class="portal-input" type="password" id="login-password" placeholder="Admin password" autocomplete="current-password" required>
+    <button class="portal-btn" type="submit" id="login-btn">Enter</button>
+    <p id="login-error">Incorrect password.</p>
+  </form>
+</div>
+
+<div id="admin-screen">
+  <div class="admin-wrap">
+
+    <div id="admin-header">
+      <div>
+        <p id="admin-show-eyebrow">Street Lamp Productions · Admin</p>
+        <h1 id="admin-show-name"></h1>
+      </div>
+      <span id="admin-badge">Admin</span>
+    </div>
+
+    <!-- Post announcement -->
+    <div class="admin-section">
+      <p class="admin-section-heading">Post Announcement</p>
+      <div id="post-form">
+        <div id="post-author-row">
+          <input class="portal-input" type="text" id="post-author" placeholder="Your name (e.g. Director)" value="Staff">
+        </div>
+        <textarea class="portal-input" id="post-message" placeholder="Write your announcement…"></textarea>
+        <button class="portal-btn" onclick="submitPost()">Post Announcement</button>
+        <p id="post-status">Posted!</p>
+      </div>
+      <div id="posts-list" class="admin-list"></div>
+    </div>
+
+    <!-- Add resource link -->
+    <div class="admin-section">
+      <p class="admin-section-heading">Add Resource Link</p>
+      <div id="resource-form">
+        <div id="resource-row1">
+          <input class="portal-input" type="text" id="resource-label" placeholder="Label (e.g. Rehearsal Schedule)">
+          <select class="portal-input" id="resource-type" style="max-width:160px">
+            <option value="document">Document</option>
+            <option value="audio">Audio</option>
+            <option value="video">Video</option>
+            <option value="image">Image</option>
+            <option value="link">Link</option>
+          </select>
+        </div>
+        <input class="portal-input" type="url" id="resource-url" placeholder="URL (Google Drive link, YouTube, etc.)">
+        <button class="portal-btn" onclick="submitResource()">Add Resource</button>
+        <p id="resource-status" style="font-size:0.6rem;letter-spacing:0.2em;color:var(--gold);display:none">Added!</p>
+      </div>
+    </div>
+
+    <!-- Upload file -->
+    <div class="admin-section">
+      <p class="admin-section-heading">Upload File to Drive</p>
+      <div id="upload-form">
+        <div id="upload-row">
+          <input class="portal-input" type="text" id="upload-label" placeholder="Label for this file">
+          <select class="portal-input" id="upload-type" style="max-width:160px">
+            <option value="document">Document</option>
+            <option value="audio">Audio</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+        </div>
+        <label id="file-label" for="file-input">
+          <span id="file-label-text">Click to choose a file (max 50MB)</span>
+        </label>
+        <input type="file" id="file-input" onchange="fileSelected(this)">
+        <button class="portal-btn" onclick="uploadFile()" id="upload-btn">Upload to Drive</button>
+        <p id="upload-progress">Uploading…</p>
+      </div>
+    </div>
+
+    <!-- Existing resources -->
+    <div class="admin-section">
+      <p class="admin-section-heading">All Resources</p>
+      <div id="resources-list" class="admin-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwR37bDfrzlr8gXWUHwr_Z36U5J6_XcFlIZKv7tIBBNg282AsmHL2BLG4zZpHpEY_v1eQ/exec';
+
+const params    = new URLSearchParams(window.location.search);
+const SHOW_ID   = params.get('show') || '';
+let adminPassword = null;
+
+function formatDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+// ── Init ──────────────────────────────────────────────────────
+async function init() {
+  document.getElementById('admin-loading').style.display = 'none';
+  if (!SHOW_ID) { alert('No show specified.'); return; }
+
+  const saved = sessionStorage.getItem('admin_pw_' + SHOW_ID);
+  if (saved) {
+    adminPassword = saved;
+    await loadAdmin();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+}
+
+// ── Login ─────────────────────────────────────────────────────
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const pw  = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  err.style.display = 'none';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'auth', show_id: SHOW_ID, password: pw })
+    });
+    const data = await res.json();
+
+    if (data.ok && data.role === 'admin') {
+      adminPassword = pw;
+      sessionStorage.setItem('admin_pw_' + SHOW_ID, pw);
+      document.getElementById('login-screen').style.display = 'none';
+      await loadAdmin();
+    } else {
+      err.textContent = data.role === 'cast' ? 'Cast password — use admin password.' : 'Incorrect password.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enter';
+    }
+  } catch {
+    err.textContent = 'Connection error.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enter';
+  }
+}
+
+// ── Load admin ────────────────────────────────────────────────
+async function loadAdmin() {
+  const res  = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'getShow', show_id: SHOW_ID })
+  });
+  const data = await res.json();
+  if (!data.ok) { alert('Show not found.'); return; }
+
+  document.title = data.show.name + ' Admin | Street Lamp';
+  document.getElementById('admin-show-name').textContent = data.show.name;
+  document.getElementById('admin-screen').style.display = 'block';
+
+  renderPosts(data.posts);
+  renderResources(data.resources);
+}
+
+// ── Posts ─────────────────────────────────────────────────────
+function renderPosts(posts) {
+  const el = document.getElementById('posts-list');
+  if (!posts.length) { el.innerHTML = '<p class="portal-empty">No announcements yet.</p>'; return; }
+  el.innerHTML = posts.map(p => `
+    <div class="admin-post">
+      <div class="admin-post-body">
+        <div class="admin-post-meta">${p.author} · ${formatDate(p.timestamp)}</div>
+        <div class="admin-post-text">${p.message}</div>
+      </div>
+      <button class="portal-btn danger" onclick="deletePost('${p.timestamp.replace(/'/g,"\\'")}')">Delete</button>
+    </div>`).join('');
+}
+
+async function submitPost() {
+  const author  = document.getElementById('post-author').value.trim() || 'Staff';
+  const message = document.getElementById('post-message').value.trim();
+  if (!message) return;
+
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'post', show_id: SHOW_ID, author, message, admin_password: adminPassword })
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('post-message').value = '';
+    const status = document.getElementById('post-status');
+    status.style.display = 'block';
+    setTimeout(() => status.style.display = 'none', 3000);
+    await loadAdmin();
+  } else {
+    alert('Error: ' + data.error);
+  }
+}
+
+async function deletePost(timestamp) {
+  if (!confirm('Delete this announcement?')) return;
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'deletePost', show_id: SHOW_ID, timestamp, admin_password: adminPassword })
+  });
+  const data = await res.json();
+  if (data.ok) await loadAdmin();
+  else alert('Error: ' + data.error);
+}
+
+// ── Resources ─────────────────────────────────────────────────
+function renderResources(resources) {
+  const el = document.getElementById('resources-list');
+  if (!resources.length) { el.innerHTML = '<p class="portal-empty">No resources yet.</p>'; return; }
+  el.innerHTML = resources.map(r => `
+    <div class="admin-resource">
+      <div class="admin-resource-label">${r.label}</div>
+      <div class="admin-resource-type">${r.type}</div>
+      <a class="portal-btn" href="${r.url}" target="_blank" rel="noopener" style="padding:8px 14px;text-decoration:none">View</a>
+      <button class="portal-btn danger" onclick="deleteResource('${r.row_id}')" style="padding:8px 14px">Delete</button>
+    </div>`).join('');
+}
+
+async function submitResource() {
+  const label = document.getElementById('resource-label').value.trim();
+  const type  = document.getElementById('resource-type').value;
+  const url   = document.getElementById('resource-url').value.trim();
+  if (!label || !url) { alert('Label and URL are required.'); return; }
+
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'addResource', show_id: SHOW_ID, label, type, url, admin_password: adminPassword })
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('resource-label').value = '';
+    document.getElementById('resource-url').value = '';
+    const s = document.getElementById('resource-status');
+    s.style.display = 'block';
+    setTimeout(() => s.style.display = 'none', 3000);
+    await loadAdmin();
+  } else {
+    alert('Error: ' + data.error);
+  }
+}
+
+async function deleteResource(row_id) {
+  if (!confirm('Delete this resource?')) return;
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'deleteResource', show_id: SHOW_ID, row_id, admin_password: adminPassword })
+  });
+  const data = await res.json();
+  if (data.ok) await loadAdmin();
+  else alert('Error: ' + data.error);
+}
+
+// ── File upload ───────────────────────────────────────────────
+let selectedFile = null;
+
+function fileSelected(input) {
+  selectedFile = input.files[0];
+  if (selectedFile) {
+    document.getElementById('file-label-text').textContent = selectedFile.name;
+  }
+}
+
+async function uploadFile() {
+  if (!selectedFile) { alert('Please select a file.'); return; }
+  const label = document.getElementById('upload-label').value.trim() || selectedFile.name;
+  const type  = document.getElementById('upload-type').value;
+
+  const btn      = document.getElementById('upload-btn');
+  const progress = document.getElementById('upload-progress');
+  btn.disabled = true;
+  progress.style.display = 'block';
+  progress.textContent = 'Reading file…';
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64 = e.target.result.split(',')[1];
+    progress.textContent = 'Uploading to Drive…';
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action:        'upload',
+          show_id:       SHOW_ID,
+          label,
+          type,
+          file_data:     base64,
+          filename:      selectedFile.name,
+          mime_type:     selectedFile.type,
+          admin_password: adminPassword
+        })
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        progress.textContent = 'Uploaded!';
+        document.getElementById('upload-label').value = '';
+        document.getElementById('file-label-text').textContent = 'Click to choose a file (max 50MB)';
+        document.getElementById('file-input').value = '';
+        selectedFile = null;
+        setTimeout(() => { progress.style.display = 'none'; }, 3000);
+        await loadAdmin();
+      } else {
+        progress.textContent = 'Error: ' + data.error;
+      }
+    } catch (err) {
+      progress.textContent = 'Upload failed.';
+    }
+    btn.disabled = false;
+  };
+  reader.readAsDataURL(selectedFile);
+}
+
+init();
+</script>
+</body>
+</html>
