@@ -468,8 +468,7 @@ async function handleLogin(e) {
   try {
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'auth', show_id: SHOW_ID, password: pw })
+      body: new URLSearchParams({ action: 'auth', show_id: SHOW_ID, password: pw })
     });
     const data = await res.json();
 
@@ -495,8 +494,7 @@ async function handleLogin(e) {
 async function loadPortal() {
   const res  = await fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'getShow', show_id: SHOW_ID })
+    body: new URLSearchParams({ action: 'getShow', show_id: SHOW_ID })
   });
   const data = await res.json();
 
