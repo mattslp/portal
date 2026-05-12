@@ -34,13 +34,15 @@
     }
 
     body.light {
-      --bg:         #f5f0e8;
-      --surface:    #ece7df;
+      --bg:         #fdfdfd;
+      --surface:    #f0f0f0;
       --border:     rgba(2,2,2,0.12);
       --text:       #020202;
       --text-dim:   rgba(2,2,2,0.55);
       --text-faint: rgba(2,2,2,0.25);
     }
+
+    body.light svg { filter: invert(1) brightness(0.15); }
 
     #main {
       flex: none;
