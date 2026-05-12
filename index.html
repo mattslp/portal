@@ -394,7 +394,7 @@
   </svg>
   <div>
     <h1 id="login-title">Show Portal</h1>
-    <p id="login-subtitle" style="margin-top:8px">Street Lamp Productions</p>
+    <p id="login-subtitle" style="margin-top:8px">Street Lamp</p>
   </div>
   <form id="login-form" onsubmit="handleLogin(event)">
     <input class="portal-input" type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password" required>
@@ -408,7 +408,7 @@
   <div class="portal-wrap">
     <div id="portal-header">
       <div id="portal-header-left">
-        <p id="portal-show-eyebrow">Street Lamp Productions</p>
+        <p id="portal-show-eyebrow">Street Lamp</p>
         <h1 id="portal-show-name"></h1>
         <div id="portal-show-meta"></div>
       </div>
@@ -482,6 +482,16 @@ async function init() {
     showError('No show specified.');
     return;
   }
+
+  // Fetch show name for login screen
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=getShowName&show_id=' + encodeURIComponent(SHOW_ID));
+    const data = await res.json();
+    if (data.ok && data.name) {
+      document.getElementById('login-title').textContent = data.name;
+      document.getElementById('login-subtitle').textContent = data.location || 'Street Lamp';
+    }
+  } catch(e) { /* non-critical, leave defaults */ }
 
   // Check session storage for saved password
   const saved = sessionStorage.getItem('portal_pw_' + SHOW_ID);
