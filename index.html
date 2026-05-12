@@ -476,14 +476,12 @@ function formatDate(iso) {
 
 // ── Init ──────────────────────────────────────────────────────
 async function init() {
-  document.getElementById('portal-loading').style.display = 'none';
-
   if (!SHOW_ID) {
     showError('No show specified.');
     return;
   }
 
-  // Fetch show name for login screen
+  // Fetch show name for login screen — keep loading spinner visible until done
   try {
     const res = await fetch(SCRIPT_URL + '?action=getShowName&show_id=' + encodeURIComponent(SHOW_ID));
     const data = await res.json();
@@ -492,6 +490,8 @@ async function init() {
       document.getElementById('login-subtitle').textContent = data.location || 'Street Lamp';
     }
   } catch(e) { /* non-critical, leave defaults */ }
+  document.getElementById('portal-loading').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
 
   // Check session storage for saved password
   const saved = sessionStorage.getItem('portal_pw_' + SHOW_ID);
