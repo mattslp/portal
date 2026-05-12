@@ -209,9 +209,41 @@
     }
 
     @keyframes portal-pulse { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.5; } }
+
+    /* ── Theme toggle ── */
+    #theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    #theme-toggle:hover { border-color: var(--text-dim); color: var(--text); }
+
+    /* ── Light mode ── */
+    body.light {
+      --bg:         #f5f0e8;
+      --surface:    #ece7df;
+      --border:     rgba(2,2,2,0.12);
+      --text:       #020202;
+      --text-dim:   rgba(2,2,2,0.55);
+      --text-faint: rgba(2,2,2,0.25);
+    }
   </style>
 </head>
 <body>
+
+<button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">Light</button>
 
 <div id="admin-loading">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210">
@@ -574,6 +606,27 @@ async function uploadFile() {
 }
 
 init();
+
+// ── Theme toggle ──────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-toggle').textContent = isLight ? 'Dark' : 'Light';
+  localStorage.setItem('portal_theme', isLight ? 'light' : 'dark');
+}
+
+// Apply saved theme immediately
+(function() {
+  const saved = localStorage.getItem('portal_theme');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    // Button text set after DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = 'Dark';
+    });
+  }
+})();
+
 </script>
 </body>
 </html>
