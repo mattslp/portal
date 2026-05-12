@@ -55,7 +55,7 @@
     }
 
     #login-subtitle {
-      font-size: 0.65rem;
+      font-size: 1rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -77,7 +77,7 @@
       border: 1px solid var(--border);
       color: var(--text);
       font-family: var(--font);
-      font-size: 0.85rem;
+      font-size: 1rem;
       letter-spacing: 0.04em;
       outline: none;
       transition: border-color 0.2s;
@@ -93,7 +93,7 @@
       border: 1px solid var(--text-dim);
       color: var(--text);
       font-family: var(--font);
-      font-size: 0.65rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -105,7 +105,7 @@
     .portal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     #login-error {
-      font-size: 0.65rem;
+      font-size: 1rem;
       letter-spacing: 0.2em;
       color: #e05555;
       text-align: center;
@@ -135,7 +135,7 @@
     #portal-header-left { display: flex; flex-direction: column; gap: 12px; }
 
     #portal-show-eyebrow {
-      font-size: 0.55rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.4em;
       text-transform: uppercase;
@@ -158,7 +158,7 @@
     }
 
     .portal-meta-item {
-      font-size: 0.7rem;
+      font-size: 1rem;
       letter-spacing: 0.15em;
       color: var(--text-dim);
     }
@@ -175,7 +175,7 @@
     }
 
     .portal-section-heading {
-      font-size: 0.58rem;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.45em;
       text-transform: uppercase;
@@ -187,7 +187,7 @@
 
     /* Description */
     #portal-description {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 300;
       line-height: 1.8;
       letter-spacing: 0.04em;
@@ -203,7 +203,7 @@
 
     .portal-creative-item { }
     .portal-creative-role {
-      font-size: 0.5rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.3em;
       text-transform: uppercase;
@@ -211,7 +211,7 @@
       margin-bottom: 4px;
     }
     .portal-creative-name {
-      font-size: 0.85rem;
+      font-size: 1rem;
       letter-spacing: 0.06em;
     }
 
@@ -225,7 +225,7 @@
     }
 
     .portal-post-meta {
-      font-size: 0.52rem;
+      font-size: 0.75rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--text-faint);
@@ -233,7 +233,7 @@
     }
 
     .portal-post-body {
-      font-size: 0.85rem;
+      font-size: 1rem;
       font-weight: 300;
       line-height: 1.7;
       letter-spacing: 0.04em;
@@ -274,7 +274,7 @@
     .portal-resource-info { flex: 1; min-width: 0; }
 
     .portal-resource-label {
-      font-size: 0.8rem;
+      font-size: 1rem;
       font-weight: 400;
       letter-spacing: 0.06em;
       white-space: nowrap;
@@ -283,7 +283,7 @@
     }
 
     .portal-resource-type {
-      font-size: 0.5rem;
+      font-size: 0.75rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--text-faint);
@@ -297,7 +297,7 @@
 
     /* Empty states */
     .portal-empty {
-      font-size: 0.65rem;
+      font-size: 1rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--text-faint);
@@ -319,7 +319,7 @@
       animation: portal-pulse 1.8s ease-in-out infinite;
     }
     .sl-loading-label {
-      font-size: 0.55rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.45em;
       text-transform: uppercase;
@@ -349,7 +349,7 @@
     }
 
     #portal-splash-label {
-      font-size: 0.55rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.45em;
       text-transform: uppercase;
@@ -378,12 +378,12 @@
       background: none;
       border: 1px solid var(--border);
       color: var(--text-dim);
-      font-family: var(--font);
-      font-size: 0.5rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
       cursor: pointer;
       transition: border-color 0.2s, color 0.2s;
     }
@@ -404,7 +404,7 @@
 </head>
 <body>
 
-<button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">Light</button>
+<button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
 
 <!-- Loading -->
 <div id="portal-loading" class="sl-loading" style="display:none">
@@ -673,7 +673,7 @@ init();
 // ── Theme toggle ──────────────────────────────────────────────
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light');
-  document.getElementById('theme-toggle').textContent = isLight ? 'Dark' : 'Light';
+  document.getElementById('theme-toggle').innerHTML = isLight ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
   localStorage.setItem('portal_theme', isLight ? 'light' : 'dark');
 }
 
@@ -685,7 +685,7 @@ function toggleTheme() {
     // Button text set after DOM ready
     document.addEventListener('DOMContentLoaded', function() {
       const btn = document.getElementById('theme-toggle');
-      if (btn) btn.textContent = 'Dark';
+      if (btn) btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
     });
   }
 })();
