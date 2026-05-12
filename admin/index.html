@@ -527,19 +527,19 @@ async function uploadFile() {
     progress.textContent = 'Uploading to Drive…';
 
     try {
+      const formData = new FormData();
+      formData.append('action', 'upload');
+      formData.append('show_id', SHOW_ID);
+      formData.append('label', label);
+      formData.append('type', type);
+      formData.append('file_data', base64);
+      formData.append('filename', selectedFile.name);
+      formData.append('mime_type', selectedFile.type);
+      formData.append('admin_password', adminPassword);
+
       const res = await fetch(SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action:        'upload',
-          show_id:       SHOW_ID,
-          label,
-          type,
-          file_data:     base64,
-          filename:      selectedFile.name,
-          mime_type:     selectedFile.type,
-          admin_password: adminPassword
-        })
+        body: formData
       });
       const data = await res.json();
 
