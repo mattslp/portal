@@ -319,8 +319,7 @@ async function handleLogin(e) {
   try {
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'auth', show_id: SHOW_ID, password: pw })
+      body: new URLSearchParams({ action: 'auth', show_id: SHOW_ID, password: pw })
     });
     const data = await res.json();
 
@@ -347,8 +346,7 @@ async function handleLogin(e) {
 async function loadAdmin() {
   const res  = await fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'getShow', show_id: SHOW_ID })
+    body: new URLSearchParams({ action: 'getShow', show_id: SHOW_ID })
   });
   const data = await res.json();
   if (!data.ok) { alert('Show not found.'); return; }
@@ -382,8 +380,7 @@ async function submitPost() {
 
   const res = await fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'post', show_id: SHOW_ID, author, message, admin_password: adminPassword })
+    body: new URLSearchParams({ action: 'post', show_id: SHOW_ID, author, message, admin_password: adminPassword })
   });
   const data = await res.json();
   if (data.ok) {
@@ -401,8 +398,7 @@ async function deletePost(timestamp) {
   if (!confirm('Delete this announcement?')) return;
   const res = await fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'deletePost', show_id: SHOW_ID, timestamp, admin_password: adminPassword })
+    body: new URLSearchParams({ action: 'deletePost', show_id: SHOW_ID, timestamp, admin_password: adminPassword })
   });
   const data = await res.json();
   if (data.ok) await loadAdmin();
@@ -430,8 +426,7 @@ async function submitResource() {
 
   const res = await fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'addResource', show_id: SHOW_ID, label, type, url, admin_password: adminPassword })
+    body: new URLSearchParams({ action: 'addResource', show_id: SHOW_ID, label, type, url, admin_password: adminPassword })
   });
   const data = await res.json();
   if (data.ok) {
@@ -450,8 +445,7 @@ async function deleteResource(row_id) {
   if (!confirm('Delete this resource?')) return;
   const res = await fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'deleteResource', show_id: SHOW_ID, row_id, admin_password: adminPassword })
+    body: new URLSearchParams({ action: 'deleteResource', show_id: SHOW_ID, row_id, admin_password: adminPassword })
   });
   const data = await res.json();
   if (data.ok) await loadAdmin();
