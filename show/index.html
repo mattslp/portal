@@ -522,16 +522,16 @@ async function init() {
       document.getElementById('login-subtitle').textContent = data.location || 'Street Lamp';
     }
   } catch(e) { /* non-critical, leave defaults */ }
-  document.getElementById('portal-loading').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
 
   // Check session storage for saved password
   const saved = sessionStorage.getItem('portal_pw_' + SHOW_ID);
   if (saved) {
     sessionPassword = saved;
+    document.getElementById('portal-loading').style.display = 'none';
     document.getElementById('portal-splash').classList.add('active');
     await loadPortal();
   } else {
+    document.getElementById('portal-loading').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
   }
 }
