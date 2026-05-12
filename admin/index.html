@@ -552,10 +552,10 @@ async function uploadFile() {
         setTimeout(() => { progress.style.display = 'none'; }, 3000);
         await loadAdmin();
       } else {
-        progress.textContent = 'Error: ' + data.error;
+        progress.textContent = 'Error: ' + (data.error || 'Unknown error');
       }
     } catch (err) {
-      progress.textContent = 'Upload failed.';
+      progress.textContent = 'Upload failed: ' + err.message;
     }
     btn.disabled = false;
   };
