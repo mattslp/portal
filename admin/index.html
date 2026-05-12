@@ -382,15 +382,15 @@ async function init() {
       document.getElementById('login-subtitle').textContent = (data.location || 'Street Lamp') + ' · Admin';
     }
   } catch(e) { /* non-critical */ }
-  document.getElementById('admin-loading').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
 
   const saved = sessionStorage.getItem('admin_pw_' + SHOW_ID);
   if (saved) {
     adminPassword = saved;
+    document.getElementById('admin-loading').style.display = 'none';
     document.getElementById('portal-splash').classList.add('active');
     await loadAdmin();
   } else {
+    document.getElementById('admin-loading').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
   }
 }
