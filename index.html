@@ -78,7 +78,7 @@
     }
 
     #subtitle {
-      font-size: 0.62rem;
+      font-size: 1rem;
       font-weight: 400;
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -100,7 +100,7 @@
       border: 1px solid var(--border);
       color: var(--text);
       font-family: var(--font);
-      font-size: 0.85rem;
+      font-size: 1rem;
       letter-spacing: 0.04em;
       outline: none;
       transition: border-color 0.2s;
@@ -115,7 +115,7 @@
       border: 1px solid var(--text-dim);
       color: var(--text);
       font-family: var(--font);
-      font-size: 0.62rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -137,15 +137,16 @@
       position: fixed;
       top: 20px;
       right: 20px;
+      z-index: 1000;
       background: none;
       border: 1px solid var(--border);
       color: var(--text-dim);
-      font-family: var(--font);
-      font-size: 0.5rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
       cursor: pointer;
       transition: border-color 0.2s, color 0.2s;
     }
@@ -165,13 +166,13 @@
     #main > *:nth-child(3) { animation-delay: 0.25s; }
   </style>
 </head>
-<body>
+<body style="opacity:0"><script>document.addEventListener("DOMContentLoaded",function(){document.body.style.opacity=""})</script>
 
-<button id="theme-toggle" onclick="toggleTheme()">Light</button>
+<button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
 
 <div id="main">
   <a href="https://streetlamp.org">
-    <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210" aria-label="Street Lamp">
+    <svg id="logo" width="72" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1210" aria-label="Street Lamp">
       <path fill="#f5f0e8" opacity="0.35" d="M1315.82,76.28v956.28h-259.08c0,-242.15,93.17,-430.39,133.23,-500.08l42.65,-74.2l-73.14,-44.44c-34.42,-20.91,-102.39,-64.17,-170.86,-118.9c-79.61,-63.61,-133.93,-121.71,-161.49,-172.68l-24.86,-45.99h513.55Z"/>
       <path fill="#f5f0e8" opacity="0.35" d="M184.18,1032.56h259.08c0,-242.17,-93.17,-430.39,-133.23,-500.07l-42.65,-74.2l73.14,-44.44c34.42,-20.91,102.39,-64.17,170.85,-118.89c79.61,-63.62,133.94,-121.72,161.5,-172.69l24.86,-45.98H184.18v956.28Z"/>
       <path fill="#f5f0e8" d="M793.98,1032.56h175.08c0-265.62,104.07-472.75,144.89-543.77-36.94-22.44-108.08-67.8-180.07-125.33-89.22-71.3-150.67-138.03-183.89-199.48-33.22,61.45-94.66,128.18-183.89,199.48-71.99,57.54-143.13,102.89-180.07,125.33,40.82,71.02,144.89,278.15,144.89,543.77h175.22v87.69H184.18v87.69h1131.65v-87.69h-521.85v-87.69ZM793.98,487.29l228.52,51.56c-40.21,86.81-94.02,231.4-108.22,406.03h-120.3v-457.58ZM585.72,944.88c-14.2-174.63-68.01-319.22-108.22-406.03l228.78-51.62-.13,457.64h-120.43Z"/>
@@ -236,7 +237,7 @@ async function handleLogin(e) {
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light');
-  document.getElementById('theme-toggle').textContent = isLight ? 'Dark' : 'Light';
+  document.getElementById('theme-toggle').innerHTML = isLight ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
   localStorage.setItem('portal_theme', isLight ? 'light' : 'dark');
 }
 
@@ -244,7 +245,7 @@ function toggleTheme() {
 (function() {
   if (localStorage.getItem('portal_theme') === 'light') {
     document.body.classList.add('light');
-    document.getElementById('theme-toggle').textContent = 'Dark';
+    document.getElementById('theme-toggle').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
   }
 })();
 </script>
