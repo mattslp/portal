@@ -218,7 +218,7 @@ async function handleLogin(e) {
       if (data.role === 'admin') {
         window.location.href = '/admin/?show=' + encodeURIComponent(showId);
       } else {
-        window.location.href = '/?show=' + encodeURIComponent(showId);
+        window.location.href = '/show/?show=' + encodeURIComponent(showId);
       }
     } else {
       err.textContent = 'Incorrect show ID or password.';
