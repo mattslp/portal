@@ -240,7 +240,7 @@
   </svg>
   <div>
     <h1 id="login-title">Admin Portal</h1>
-    <p id="login-subtitle" style="margin-top:8px">Street Lamp Productions</p>
+    <p id="login-subtitle" style="margin-top:8px">Street Lamp</p>
   </div>
   <form id="login-form" onsubmit="handleLogin(event)">
     <input class="portal-input" type="password" id="login-password" placeholder="Admin password" autocomplete="current-password" required>
@@ -254,7 +254,7 @@
 
     <div id="admin-header">
       <div>
-        <p id="admin-show-eyebrow">Street Lamp Productions · Admin</p>
+        <p id="admin-show-eyebrow">Street Lamp · Admin</p>
         <h1 id="admin-show-name"></h1>
       </div>
       <span id="admin-badge">Admin</span>
@@ -341,6 +341,16 @@ function formatDate(iso) {
 async function init() {
   document.getElementById('admin-loading').style.display = 'none';
   if (!SHOW_ID) { alert('No show specified.'); return; }
+
+  // Fetch show name for login screen
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=getShowName&show_id=' + encodeURIComponent(SHOW_ID));
+    const data = await res.json();
+    if (data.ok && data.name) {
+      document.getElementById('login-title').textContent = data.name;
+      document.getElementById('login-subtitle').textContent = (data.location || 'Street Lamp') + ' · Admin';
+    }
+  } catch(e) { /* non-critical */ }
 
   const saved = sessionStorage.getItem('admin_pw_' + SHOW_ID);
   if (saved) {
